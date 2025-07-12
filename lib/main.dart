@@ -1,24 +1,39 @@
 import 'package:flutter/material.dart';
+import 'screens/register_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(RoadSafeApp());
 }
 
-class MyApp extends StatelessWidget {
+class RoadSafeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Driver Drowsiness App',
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: LoginPage(),
+      title: 'RoadSafe AI',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.indigo[900],
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.orangeAccent,
+          primary: Colors.indigo[900]!,
+          secondary: Colors.amber,
+        ),
+        scaffoldBackgroundColor: Color(0xFFE6F0FA),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        fontFamily: 'Roboto',
+      ),
+      home: LoginPage(),
     );
   }
 }
 
 class LoginPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -26,69 +41,117 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   void handleLogin() {
-    String email = emailController.text.trim();
-    String password = passwordController.text;
+    final email = emailController.text.trim();
+    final password = passwordController.text;
 
     if (email.isNotEmpty && password.isNotEmpty) {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: Text("Login Successful"),
-          content: Text("Welcome, $email!"),
+          content: Text("Welcome, $email"),
         ),
       );
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Please fill both fields")));
+      ).showSnackBar(SnackBar(content: Text("Please fill in all fields")));
     }
+  }
+
+  void handleForgotPassword() {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Forgot Password tapped")));
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorPrimary = Theme.of(context).colorScheme.primary;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Icon(Icons.visibility, size: 80, color: Colors.deepPurple),
-              SizedBox(height: 16),
-              Text(
-                "Driver Drowsiness Monitor",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 40),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.emoji_transportation, size: 80, color: colorPrimary),
+                const SizedBox(height: 12),
+                Text(
+                  "RoadSafe AI",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: colorPrimary,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 8),
+                Text(
+                  "Driver Drowsiness Detection",
+                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                 ),
-              ),
-              SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: handleLogin,
-                child: Text("Login"),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
+                const SizedBox(height: 32),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    prefixIcon: Icon(Icons.email),
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              TextButton(onPressed: () {}, child: Text("Forgot Password?")),
-            ],
+                const SizedBox(height: 16),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    prefixIcon: Icon(Icons.lock),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: handleForgotPassword,
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(
+                        color: colorPrimary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: handleLogin,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorPrimary,
+                    foregroundColor: Colors.white,
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 3,
+                  ),
+                  child: Text("Login"),
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                    );
+                  },
+                  child: Text(
+                    "New user? Register here",
+                    style: TextStyle(color: Colors.lightBlue),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
